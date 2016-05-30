@@ -10,6 +10,5 @@
   option_install_java: false
   java_version: 7
 
-  option_install_nodejs
+  option_install_nodejs: false.
   nodejs_version: "4.x" # 0.10 0.12 4.x 5.x
-
