@@ -14,7 +14,7 @@ Simple
 
   roles:
     - {
-        role: "sa-gluster-fs"
+        role: "sa-ci-e2e-headless"
       }
 
 
@@ -23,6 +23,7 @@ Advanced:
 
   roles:
     - {
-        role: "sa-gluster-fs",
-        glusterfs_version: "3.7"
+        role: "sa-ci-e2e-headless",
+        option_install_java: true,
+        option_install_nodejs: true
       }

@@ -1,0 +1,100 @@
+  - name: NodeJS | Check if is present
+    command: test -x /usr/bin/node
+    when: ansible_system == "Linux"
+    ignore_errors: yes
+    register: node_present
+    tags:
+        -nodejs
+        -setup
+
+  - name: NodeJS | package dependencies
+    apt: pkg={{item}} state=present
+    with_items:
+       - git
+    become: yes
+    tags:
+      - nodejs
+      - setup
+
+
+  - name: NodeJS | Check nodejs_version variable
+    assert:
+      that: nodejs_version in [ "0.10", "0.12", "4.x", "5.x" ]
+    when: ansible_os_family == "Debian" and node_present|failed
+    tags:
+       -nodejs
+       -setup
+
+  - name: NodeJS | Import the NodeSource GPG key into apt
+    apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key state=present
+    become: yes
+    when: ansible_os_family == "Debian" and node_present|failed
+    tags:
+       -nodejs
+       -setup
+
+
+  - name: NodeJS | Add NodeSource deb repository
+    apt_repository: repo='deb https://deb.nodesource.com/node_{{ nodejs_version }} {{ ansible_distribution_release }} main' state=present
+    become: yes
+    when: ansible_os_family == "Debian" and node_present|failed
+    tags:
+       -nodejs
+       -setup
+
+
+  - name: NodeJS | Add NodeSource deb-src repository
+    apt_repository: repo='deb-src https://deb.nodesource.com/node_{{ nodejs_version }} {{ ansible_distribution_release }} main' state=present
+    become: yes
+    when: ansible_os_family == "Debian" and node_present|failed
+    tags:
+       -nodejs
+       -setup
+
+  - name: NodeJS | Add NodeSource repository preferences
+    template:
+      src: "{{role_dir}}/templates/nodejs/deb_nodesource_com_node.pref.j2"
+      dest: /etc/apt/preferences.d/deb_nodesource_com_node.pref
+    become: yes
+    when: ansible_os_family == "Debian" and node_present|failed
+    tags:
+       -nodejs
+       -setup
+
+  - name: NodeJS | Install Node.js 0.10 0.12 family
+    apt: pkg=nodejs={{ nodejs_version }}.* state=installed update_cache=yes
+    become: yes
+    when: ansible_os_family == "Debian" and nodejs_version in [ "0.10", "0.12" ]  and node_present|failed
+    tags:
+       -nodejs
+       -setup
+
+  - name: NodeJS | Install Node.js 4.x 5.x family
+    apt: pkg=nodejs state=installed update_cache=yes
+    become: yes
+    when: ansible_os_family == "Debian" and nodejs_version not in [ "0.10", "0.12" ]  and node_present|failed
+    tags:
+       -nodejs
+       -setup
+
+  - name: NodeJS | Self update npm to most recent one
+    shell: npm install -g npm
+    when: ansible_os_family == "Debian" and node_present|failed
+    become: yes
+    tags:
+       -nodejs
+       -setup
+
+
+  - name: NodeJS | Install gulp, bower, grunt, grunt-cli tools tool
+    shell: npm install -g {{ item }}
+    when: ansible_os_family == "Debian" and node_present|failed
+    with_items:
+      - gulp
+      - bower
+      - grunt
+      - grunt-cli
+    become: yes
+    tags:
+       -nodejs
+       -setup

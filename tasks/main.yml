@@ -4,6 +4,9 @@
   - include: tasks_java.yml
     when: option_install_java
 
+  - include: tasks_nodejs.yml
+    when: option_install_nodejs
+
   - include: tasks_xvfb.yml
 
   - include: tasks_browsers.yml
