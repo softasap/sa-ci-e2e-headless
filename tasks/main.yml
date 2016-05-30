@@ -1,0 +1,13 @@
+---
+# tasks file for sa-ci-e2e-headless
+
+  - include: tasks_java
+    when: option_install_java
+
+  - include: tasks_xvfb.yml
+
+  - include: tasks_browsers.yml
+
+  - include: tasks_protractor.yml
+
+  - include: tasks_selenium.yml

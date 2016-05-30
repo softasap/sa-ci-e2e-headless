@@ -1,0 +1,36 @@
+---
+  - name: Browsers | Install packages required by browsers
+    apt: pkg="{{item}}" state="present"
+    with_items:
+      - "x11-xkb-utils"
+      - "xfonts-100dpi"
+      - "xfonts-75dpi"
+      - "xfonts-scalable"
+      - "xserver-xorg-core"
+      - "libfontconfig1-dev"
+    tags:
+      - browsers
+
+  - name: Browsers | Install chrome firefox browsers
+    apt: pkg="{{item}}" state="present"
+    with_items:
+      - "chromium-browser"
+      - "firefox"
+    tags:
+      - browsers
+
+  - name: Browsers | Install phantomjs
+    npm: name=phantomjs state=present global=yes executable="{{npm_path_detected}}/npm"
+    become: "{{npm_is_global}}"
+    environment:
+      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+    tags:
+      - browsers
+
+  - name: Browsers | Install chromedriver
+    npm: name=chromedriver state=present global=yes executable="{{npm_path_detected}}/npm"
+    become: "{{npm_is_global}}"
+    environment:
+      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+    tags:
+      - browsers

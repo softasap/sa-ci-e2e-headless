@@ -1,0 +1,54 @@
+
+---
+
+  - name: Selenium | Check if is installed
+    command: test -x {{ selenium_dir }}/selenium-server-standalone.jar
+    register: selenium_present
+    ignore_errors: yes
+    tags:
+      - mysql
+
+  - name: Selenium | Create folder log
+    file: path={{ selenium_logdir | default('/var/logs/selenium') }} state=directory mode=0755
+    when: selenium_present|failed
+    become: yes
+    tags:
+      - selenium
+
+  - name: Selenium | Create target dir
+    file: path={{ selenium_dir }} state=directory mode=0755
+    when: selenium_present|failed
+    become: yes
+    tags:
+      - selenium
+
+  - name: Selenium | Download distribution
+    get_url:
+      url: 'http://selenium-release.storage.googleapis.com/{{ selenium_version.split('.')[0] }}.{{ selenium_version.split('.')[1] }}/selenium-server-standalone-{{ selenium_version }}.jar'
+      dest: {{ selenium.dir }}
+    when: selenium_present|failed
+    become: yes
+    tags:
+      - selenium
+
+  - name: Selenium |  Install
+    command: mv {{ selenium_dir }}/selenium-server-standalone-{{ selenium_version }}.jar {{ selenium_dir }}/selenium-server-standalone.jar
+    when: selenium_present|failed
+    become: yes
+    tags:
+      - selenium
+
+  - name: Selenium |  Add to startup
+    template: src="{{role_dir}}/templates/selenium_upstart.j2" dest=/etc/init.d/selenium owner=root group=root mode=0755
+    when: selenium_present|failed
+    become: yes
+    tags:
+      - selenium
+
+  - name: Run
+    service: name=selenium state=started enabled=yes
+    when: selenium_present|failed and docker_test is not defined
+    become: yes
+    tags:
+      - selenium
+    notify: restart selenium

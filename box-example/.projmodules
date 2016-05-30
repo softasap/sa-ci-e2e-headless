@@ -1,0 +1,4 @@
+[submodule "roles/sa-ci-e2e-headless"]
+        path = roles/sa-ci-e2e-headless
+        url = https://github.com/softasap/sa-ci-e2e-headless.git
+

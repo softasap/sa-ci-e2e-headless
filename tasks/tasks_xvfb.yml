@@ -1,0 +1,6 @@
+---
+  - name: X virtual frame buffer (Xvfb)
+    apt: pkg="xvfb" state=present
+    become: yes
+    tags:
+      - xvfb

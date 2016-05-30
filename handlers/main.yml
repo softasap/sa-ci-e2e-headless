@@ -1,0 +1,7 @@
+---
+# handlers file for sa-ci-e2e-headless
+
+  - name: restart selenium
+    service: name=selenium state=restarted
+    become: yes
+    when: docker_test is not defined
