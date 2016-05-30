@@ -1,5 +1,7 @@
 ---
-- hosts: localhost
-  remote_user: root
+- hosts: all
   roles:
-    - sa-ci-e2e-headless
+    - {
+        role: "role_under_test",
+        option_install_java: true
+      }
