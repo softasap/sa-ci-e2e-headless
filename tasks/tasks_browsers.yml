@@ -8,6 +8,7 @@
       - "xfonts-scalable"
       - "xserver-xorg-core"
       - "libfontconfig1-dev"
+    become: yes
     tags:
       - browsers
 
@@ -16,6 +17,7 @@
     with_items:
       - "chromium-browser"
       - "firefox"
+    become: yes
     tags:
       - browsers
 
