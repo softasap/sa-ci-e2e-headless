@@ -24,8 +24,8 @@
 
   - name: Selenium | Download distribution
     get_url:
-      url: 'http://selenium-release.storage.googleapis.com/{{ selenium_version.split('.')[0] }}.{{ selenium_version.split('.')[1] }}/selenium-server-standalone-{{ selenium_version }}.jar'
-      dest: {{ selenium.dir }}
+      url: "http://selenium-release.storage.googleapis.com/{{ selenium_version.split('.')[0] }}.{{ selenium_version.split('.')[1] }}/selenium-server-standalone-{{ selenium_version }}.jar"
+      dest: "{{ selenium_dir }}"
     when: selenium_present|failed
     become: yes
     tags:
