@@ -1,6 +1,12 @@
 ---
-  - name: X virtual frame buffer (Xvfb)
+  - name: XVFB | X virtual frame buffer (Xvfb)
     apt: pkg="xvfb" state=present
     become: yes
     tags:
       - xvfb
+
+  - name: XVFB |  Add to startup
+    template: src="{{role_dir}}/templates/xvfb_upstart.j2" dest=/etc/init.d/xvfb owner=root group=root mode=0755
+    become: yes
+    tags:
+      - selenium
