@@ -44,8 +44,7 @@ fi
 case "$1" in
   start)
     log_daemon_msg "Starting $DESC" "$NAME"
-    if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE
-          --background --make-pidfile --exec $XVFB -- $XVFB_ARGS ; then
+    if start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --background --make-pidfile --exec $XVFB -- $XVFB_ARGS ; then
       log_end_msg 0
     else
       log_end_msg 1

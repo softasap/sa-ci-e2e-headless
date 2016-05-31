@@ -14,7 +14,7 @@
 ### END INIT INFO
 
 DESC="Selenium standalone server"
-USER=selenium
+USER={{deploy_user}}
 JAVA=/usr/bin/java
 PID_FILE=/var/run/selenium.pid
 JAR_FILE={{selenium_dir}}/selenium-server-standalone-{{selenium_version}}.jar
