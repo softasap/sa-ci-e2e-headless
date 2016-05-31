@@ -2,9 +2,15 @@
 ---
 
   - name: Selenium | Create folder log
-    file: path={{ selenium_logdir | default('/var/logs/selenium') }} state=directory mode=0755
-    when: selenium_present|failed
+    file: path={{ selenium_logdir | default('/var/logs/selenium') }} state=directory mode=0755 owner="{{deploy_user}}"
     become: yes
+    tags:
+      - selenium
+
+  - name: Selenium | Check if is installed
+    command: test -x {{ selenium_dir }}/selenium-server-standalone.jar
+    register: selenium_present
+    ignore_errors: yes
     tags:
       - selenium
 
@@ -15,12 +21,6 @@
     tags:
       - selenium
 
-  - name: Selenium | Check if is installed
-    command: test -x {{ selenium_dir }}/selenium-server-standalone.jar
-    register: selenium_present
-    ignore_errors: yes
-    tags:
-      - selenium      
 
   - name: Selenium | Download distribution
     get_url:
