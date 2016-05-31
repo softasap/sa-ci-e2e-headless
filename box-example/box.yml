@@ -11,7 +11,8 @@
   roles:
      - {
          role: "sa-ci-e2e-headless",
-         option_install_java: true
+         option_install_java: true,
+         option_install_nodejs: true
        }
 
 
