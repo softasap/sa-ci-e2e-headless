@@ -21,7 +21,7 @@
     register: dot_profile_present_unusual
 
   - set_fact:
-      npm_source_path: "/home/{{deploy_user}}/.profile &&"
+      npm_source_path: "/{{deploy_user}}/.profile &&"
     when: not(dot_profile_present_unusual | failed) and (dot_profile_present_usual | failed)
 
   - name: NODE LOCATION | Detect npm
