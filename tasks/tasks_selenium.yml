@@ -52,7 +52,7 @@
     tags:
       - selenium
 
-  - name: Run
+  - name: Selenium |  Run
     service: name=selenium state=started enabled=yes
     when: selenium_present|failed and docker_test is not defined
     become: yes
