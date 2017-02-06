@@ -1,10 +1,27 @@
 ---
+
+  - name: Node Location | Check if user .profile present
+    command: test -e /home/{{deploy_user}}/.profile
+    ignore_errors: yes
+    register: dot_profile_present
+
   - name: NODE LOCATION | Detect npm
     shell: 'source /home/{{deploy_user}}/.profile && dirname "`which npm`"'
+    when: not (dot_profile_present | failed)
     args:
        executable: /bin/bash
     register: npm_path_detected_raw
     become: "{{deploy_user}}"
+
+
+  - name: NODE LOCATION | Detect npm
+    shell: 'dirname "`which npm`"'
+    when: dot_profile_present | failed
+    args:
+       executable: /bin/bash
+    register: npm_path_detected_raw
+    become: "{{deploy_user}}"
+
 
   - set_fact:
       npm_path_detected: "{{ npm_path_detected_raw.stdout }}"
