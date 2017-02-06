@@ -3,6 +3,9 @@
   role_dir: "{{role_path}}"
   deploy_user: "{{ansible_user_id}}"
 
+  options_install_selenium: true
+  options_install_webdriver: true
+
   selenium_version: 2.49.1
   selenium_dir: /usr/local/share/selenium
   selenium_log_dir: /var/log/selenium

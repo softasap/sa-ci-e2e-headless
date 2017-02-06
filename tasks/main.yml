@@ -18,3 +18,7 @@
   - include: tasks_browsers.yml
 
   - include: tasks_selenium.yml
+    when: options_install_selenium
+
+  - include: tasks_webdriver.yml
+    when: options_install_webdriver

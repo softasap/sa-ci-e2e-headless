@@ -3,16 +3,29 @@ sa-ci-e2e-headless
 
 [![Build Status](https://travis-ci.org/softasap/sa-ci-e2e-headless.svg?branch=master)](https://travis-ci.org/softasap/sa-ci-e2e-headless)
 
-Installs selenium, chrome(optional), firefox(optional), chromium(optional), phantomjs(optional) with headless support (via xvfb). Optionally installs java & nodejs if needed.
+Swiss knife play to get some e2e up and running on your build server
+
+Installs selenium(optional), webdriver(optional) , chrome(optional), firefox(optional), chromium(optional), phantomjs(optional) with headless support (via xvfb). Optionally installs java & nodejs if needed.
 
 Example of usage (all parameters are optional)
 
 Simple
 
+Note: you need to select one, as selenium is installed by webdriver silently as its dependency.
+Make sure to review browsers needed.
+
 ```YAML
   roles:
     - {
-        role: "sa-ci-e2e-headless"
+        role: "sa-ci-e2e-headless",
+        options_install_selenium: false,
+        options_install_webdriver: true,
+
+        # optional browsers
+        browser_phantomjs: true,
+        browser_chromium: true,
+        browser_firefox: true,
+        browser_google_chrome: true
       }
 ```
 
@@ -23,21 +36,32 @@ Advanced:
   roles:
     - {
         role: "sa-ci-e2e-headless",
+        # optional java install
         option_install_java: true,
         java_version: 7
 
+        # optional browsers
         browser_phantomjs: true,
         browser_chromium: true,
         browser_firefox: true,
         browser_google_chrome: true,
 
+        # optional nodejs
         option_nodejs_install_with_nvm: true,
         nvm_version: 0.31.1,
         nodejs_version: "6.9.2",        
 
         option_nodejs_link_globally: false,
         option_integrate_w_bash: false,
-        option_integrate_w_zsh: false
+        option_integrate_w_zsh: false,
+
+        # optional selenium
+        options_install_selenium: true,
+        selenium_version: 2.49.1,
+
+        # webdriver for angularjs testing with protractor
+        options_install_webdriver: true,
+
 
       }
 

@@ -5,3 +5,8 @@
     service: name=selenium state=restarted
     become: yes
     when: docker_test is not defined
+
+  - name: restart webdriver
+    service: name=webdriver state=restarted
+    become: yes
+    when: docker_test is not defined

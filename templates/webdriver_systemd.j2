@@ -1,0 +1,14 @@
+[Unit]
+Description=Selenium Standalone Server
+
+[Service]
+Type=simple
+User={{deploy_user}}
+
+Environment=PATH={{npm_path_detected}}:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin:$PATH
+Environment=NODE_BIN={{npm_path_detected}}/bin/node
+
+ExecStart=/usr/bin/xvfb-run -- webdriver-manager start
+
+[Install]
+WantedBy=multi-user.target

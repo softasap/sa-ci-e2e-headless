@@ -1,0 +1,47 @@
+---
+  - name: Webdriver Manager | INSTALLATION UNDER ROOT IS NOT UNRECOMMENDED
+    shell: "{{item}}"
+    environment:
+      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+    with_items:
+      - "npm config set user 0"
+      - "npm config set unsafe-perm true"
+    when: deploy_user == "root"
+
+  - name: Webdriver Manager | Install webdriver
+    npm: name=webdriver-manager state=present global=yes executable="{{npm_path_detected}}/npm"
+    become: "{{npm_is_global}}"
+    environment:
+      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+    tags:
+      - webdriver
+
+  - name: Webdriver Manager | Setting up selenium server (webdriver-manager update)
+    shell: webdriver-manager update
+    become: "{{npm_is_global}}"
+    environment:
+      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+    tags:
+      - webdriver
+
+  - name: Webdriver Manager |  Add to startup (upstart)
+    template: src="{{role_dir}}/templates/webdriver_upstart.j2" dest=/etc/init.d/webdriver owner=root group=root mode=0755
+    when: upstart_system == "upstart"
+    become: yes
+    tags:
+      - webdriver
+
+  - name: Selenium |  Add to startup (systemd)
+    template: src="{{role_dir}}/templates/webdriver_systemd.j2" dest=/etc/systemd/system/webdriver.service owner=root group=root mode=0664
+    when: upstart_system == "systemd"
+    become: yes
+    tags:
+      - webdriver
+
+  - name: Run
+    service: name=webdriver state=started enabled=yes
+    when: docker_test is not defined
+    become: yes
+    tags:
+      - selenium
+    notify: restart webdriver
