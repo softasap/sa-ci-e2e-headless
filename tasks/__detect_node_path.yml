@@ -3,28 +3,28 @@
   - set_fact:
       npm_source_prefix: ""
 
-  - name: Node Location | Check if user .profile present on usual location
-    command: test -e /home/{{deploy_user}}/.profile
-    ignore_errors: yes
-    become: "{{deploy_user}}"
-    register: dot_profile_present_usual
+  - name: USE | Detect Node Location overrides
+    shell: |
+      if [[ -f /home/{{deploy_user}}/.nvm/nvm.sh ]]; then echo /home/{{deploy_user}}/.nvm/nvm.sh;
+      elif [[ /{{deploy_user}}/.nvm/nvm.sh ]]; then echo /{{deploy_user}}/.nvm/nvm.sh;
+      elif [[ -f /home/{{deploy_user}}/.profile ]]; then echo /home/{{deploy_user}}/.profile;
+      elif [[ -f /{{deploy_user}}/.profile ]]; then echo /{{deploy_user}}/.profile;
+      elif [[ -f /home/{{deploy_user}}/.bashrc ]]; then echo /home/{{deploy_user}}/.bashrc;
+      elif [[ -f /{{deploy_user}}/.bashrc ]]; then echo /{{deploy_user}}/.bashrc;
+      else echo "";
+      fi
+    become: yes
+    become_user: "{{deploy_user}}"
+    args:
+      executable: /bin/bash
+    register: nvm_detect_raw
 
   - set_fact:
-      npm_source_prefix: "source /home/{{deploy_user}}/.profile &&"
-    when: not (dot_profile_present_usual | failed)
+      npm_source_prefix: "source {{nvm_detect_raw.stdout}} &&"
+    when: nvm_detect_raw.stdout != ""
 
-  - name: Node Location | Check if user .profile present on unusual location
-    command: test -e /{{deploy_user}}/.profile
-    when: dot_profile_present_usual | failed
-    ignore_errors: yes
-    become: "{{deploy_user}}"
-    register: dot_profile_present_unusual
 
-  - set_fact:
-      npm_source_prefix: "source /{{deploy_user}}/.profile &&"
-    when: not(dot_profile_present_unusual | failed) and (dot_profile_present_usual | failed)
-
-  - debug: var="npm_source_prefix"  
+  - debug: var="npm_source_prefix"
 
   - name: NODE LOCATION | Detect npm
     shell: '{{npm_source_prefix}} dirname "`which npm`"'
