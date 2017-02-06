@@ -6,13 +6,12 @@
     become: "{{deploy_user}}"
     register: dot_profile_present_usual
 
-  - name: Node Location | Check if user .profile present on usual location
+  - name: Node Location | Check if user .profile present on unusual location
     command: test -e /home/{{deploy_user}}/.profile
     when: dot_profile_present_usual | failed
     ignore_errors: yes
     become: "{{deploy_user}}"
     register: dot_profile_present_unusual
-
 
   - name: NODE LOCATION | Detect npm
     shell: 'source /home/{{deploy_user}}/.profile && dirname "`which npm`"'
@@ -29,7 +28,6 @@
        executable: /bin/bash
     register: npm_path_detected_raw
     become: "{{deploy_user}}"
-
 
   - name: NODE LOCATION | Detect npm
     shell: 'dirname "`which npm`"'
