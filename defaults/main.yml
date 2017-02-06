@@ -8,8 +8,18 @@
   selenium_dir: /usr/local/share/selenium
   selenium_logdir: /var/log/selenium/
 
+  browser_phantomjs: true
+  browser_chromium: true
+  browser_firefox: true
+  browser_chrome: true
+
   option_install_java: false
   java_version: 7
 
-  option_install_nodejs: false
-  nodejs_version: "4.x" # 0.10 0.12 4.x 5.x
+  nvm_version: 0.31.1
+
+  option_nodejs_install_with_nvm: false
+  option_nodejs_link_globally: false
+  option_integrate_w_bash: false
+  option_integrate_w_zsh: false
+  nodejs_version: "6.9.2"

@@ -25,5 +25,5 @@ Advanced:
     - {
         role: "sa-ci-e2e-headless",
         option_install_java: true,
-        option_install_nodejs: true
+        option_nodejs_install_with_nvm: true
       }

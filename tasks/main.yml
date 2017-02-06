@@ -1,11 +1,15 @@
 ---
 # tasks file for sa-ci-e2e-headless
 
+  - include: __detect_init_system.yml
+
   - include: tasks_java.yml
     when: option_install_java
 
-  - include: tasks_nodejs.yml
-    when: option_install_nodejs
+  - include: tasks_node_nvm.yml
+    when: option_nodejs_install_with_nvm
+
+  - include: __detect_node_path.yml
 
   - include: tasks_xvfb.yml
 
