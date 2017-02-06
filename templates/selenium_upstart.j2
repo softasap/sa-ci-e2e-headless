@@ -17,17 +17,17 @@ DESC="Selenium standalone server"
 USER={{deploy_user}}
 JAVA=/usr/bin/java
 PID_FILE=/var/run/selenium.pid
-JAR_FILE={{selenium_dir}}/selenium-server-standalone-{{selenium_version}}.jar
-LOG_FILE=/var/log/selenium/selenium.log
+JAR_FILE={{selenium_jar_file}}
+LOG_FILE={{selenium_log_file}}
 
-DAEMON_OPTS="-Xmx500m -Xss1024k -jar $JAR_FILE -log $LOG_FILE"
 # See this Stack Overflow item for a delightful bug in Java that requires the
 # strange-looking java.security.egd workaround below:
 # http://stackoverflow.com/questions/14058111/selenium-server-doesnt-bind-to-socket-after-being-killed-with-sigterm
-DAEMON_OPTS="-Djava.security.egd=file:/dev/./urandom $DAEMON_OPTS"
+
+DAEMON_OPTS="{{selenium_java_opts}}"
 
 # The value for DISPLAY must match that used by the running instance of Xvfb.
-export DISPLAY=:10
+export DISPLAY=:{{headless_display}}
 
 # Make sure that the PATH includes the location of the ChromeDriver binary.
 # This is necessary for tests with Chromium to work.

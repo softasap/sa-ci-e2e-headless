@@ -26,7 +26,7 @@ PIDFILE=/var/run/${NAME}.pid
 # Using -extension RANDR doesn't seem to work anymore. Firefox complains
 # about not finding extension RANDR whether or not you include it here.
 # Fortunately this is a non-fatal warning and doesn't stop Firefox from working.
-XVFB_ARGS=":10 -extension RANDR -noreset -ac -screen 10 1024x768x16"
+XVFB_ARGS="{{xvbf_args}}"
 
 set -e
 

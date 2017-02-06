@@ -5,7 +5,14 @@
 
   selenium_version: 2.49.1
   selenium_dir: /usr/local/share/selenium
-  selenium_logdir: /var/log/selenium/
+  selenium_log_dir: /var/log/selenium
+  selenium_log_file: "{{selenium_logdir}}/selenium.log"
+  selenium_jar_file: "{{selenium_dir}}/selenium-server-standalone-{{selenium_version}}.jar"
+
+  headless_display: "10"
+
+  xvbf_args: ":{{headless_display}} -extension RANDR -noreset -ac -screen {{headless_display}} 1024x768x16"
+  selenium_java_opts: "-Djava.security.egd=file:/dev/./urandom -Xmx500m -Xss1024k -jar {{selenium_jar_file}} -log {{selenium_log_file}}"
 
   browser_phantomjs: true
   browser_chromium: true

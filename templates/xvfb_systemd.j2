@@ -1,0 +1,9 @@
+[Unit]
+Description=X Virtual Frame Buffer Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/Xvfb "{{xvbf_args}}"
+
+[Install]
+WantedBy=multi-user.target

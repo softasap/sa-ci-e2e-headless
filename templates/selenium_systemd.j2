@@ -1,0 +1,12 @@
+[Unit]
+Description=Selenium Standalone Server
+
+[Service]
+Type=simple
+User={{deploy_user}}
+
+Environment=DISPLAY=:{{headless_display}}
+ExecStart=/usr/bin/java -jar {{selenium_jar_file}} {{selenium_java_opts}}
+
+[Install]
+WantedBy=multi-user.target

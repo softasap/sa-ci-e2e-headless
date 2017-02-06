@@ -2,7 +2,7 @@
 ---
 
   - name: Selenium | Create folder log
-    file: path={{ selenium_logdir | default('/var/logs/selenium') }} state=directory mode=0755 owner="{{deploy_user}}"
+    file: path={{ selenium_log_dir | default('/var/logs/selenium') }} state=directory mode=0755 owner="{{deploy_user}}"
     become: yes
     tags:
       - selenium
@@ -38,9 +38,16 @@
     tags:
       - selenium
 
-  - name: Selenium |  Add to startup
+  - name: Selenium |  Add to startup (upstart)
     template: src="{{role_dir}}/templates/selenium_upstart.j2" dest=/etc/init.d/selenium owner=root group=root mode=0755
-    when: selenium_present|failed
+    when: upstart_system == "upstart"
+    become: yes
+    tags:
+      - selenium
+
+  - name: Selenium |  Add to startup (systemd)
+    template: src="{{role_dir}}/templates/selenium_systemd.j2" dest=/etc/systemd/system/selenium.service owner=root group=root mode=0664
+    when: upstart_system == "systemd"
     become: yes
     tags:
       - selenium
