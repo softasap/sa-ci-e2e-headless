@@ -24,6 +24,8 @@
       npm_source_prefix: "source /{{deploy_user}}/.profile &&"
     when: not(dot_profile_present_unusual | failed) and (dot_profile_present_usual | failed)
 
+  - debug: var="npm_source_prefix"  
+
   - name: NODE LOCATION | Detect npm
     shell: '{{npm_source_prefix}} dirname "`which npm`"'
     args:
