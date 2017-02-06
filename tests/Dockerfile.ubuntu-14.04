@@ -16,6 +16,8 @@ RUN wget https://bootstrap.pypa.io/ez_setup.py -O - | python
 
 # emulate gui structure
 RUN mkdir -p /home/root/Desktop
+RUN mkdir -p /root/Desktop
+
 
 COPY initctl_faker .
 RUN chmod +x initctl_faker && rm -fr /sbin/initctl && ln -s /initctl_faker /sbin/initctl
