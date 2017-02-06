@@ -4,5 +4,5 @@
     - {
         role: "role_under_test",
         option_install_java: true,
-        option_install_nodejs: true
+        option_nodejs_install_with_nvm: true
       }
