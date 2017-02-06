@@ -10,7 +10,7 @@
   browser_phantomjs: true
   browser_chromium: true
   browser_firefox: true
-  browser_chrome: true
+  browser_google_chrome: true
 
   option_install_java: false
   java_version: 7
