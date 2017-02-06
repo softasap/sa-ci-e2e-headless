@@ -15,6 +15,7 @@ RUN wget https://bootstrap.pypa.io/ez_setup.py -O - | python
 
 RUN mkdir -p /home/root/Desktop
 RUN mkdir -p /root/Desktop
+RUN touch /root/.profile
 
 
 COPY initctl_faker .
