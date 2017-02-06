@@ -1,7 +1,7 @@
 ---
 
   - set_fact:
-      npm_source_path: ""
+      npm_source_prefix: ""
 
   - name: Node Location | Check if user .profile present on usual location
     command: test -e /home/{{deploy_user}}/.profile
@@ -10,7 +10,7 @@
     register: dot_profile_present_usual
 
   - set_fact:
-      npm_source_path: "/home/{{deploy_user}}/.profile &&"
+      npm_source_prefix: "source /home/{{deploy_user}}/.profile &&"
     when: not (dot_profile_present_usual | failed)
 
   - name: Node Location | Check if user .profile present on unusual location
@@ -21,11 +21,11 @@
     register: dot_profile_present_unusual
 
   - set_fact:
-      npm_source_path: "/{{deploy_user}}/.profile &&"
+      npm_source_prefix: "source /{{deploy_user}}/.profile &&"
     when: not(dot_profile_present_unusual | failed) and (dot_profile_present_usual | failed)
 
   - name: NODE LOCATION | Detect npm
-    shell: '{{npm_source_path}} dirname "`which npm`"'
+    shell: '{{npm_source_prefix}} dirname "`which npm`"'
     args:
        executable: /bin/bash
     register: npm_path_detected_raw
