@@ -1,6 +1,5 @@
 ---
 # defaults file for sa-ci-e2e-headless
-  root_dir: "{{role_path}}"
   role_dir: "{{role_path}}"
   deploy_user: "{{ansible_user_id}}"
 
