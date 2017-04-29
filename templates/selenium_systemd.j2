@@ -6,7 +6,7 @@ Type=simple
 User={{deploy_user}}
 
 Environment=DISPLAY=:{{headless_display}}
-ExecStart=/usr/bin/java -jar {{selenium_jar_file}} {{selenium_java_opts}}
+ExecStart=/usr/bin/java {{selenium_java_opts}} -jar {{selenium_jar_file}} -log {{selenium_log_file}} {{selenium_jar_opts}}
 
 [Install]
 WantedBy=multi-user.target

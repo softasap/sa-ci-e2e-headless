@@ -15,7 +15,8 @@
   headless_display: "99"
 
   xvbf_args: ":{{headless_display}} -extension RANDR -noreset -ac -screen {{headless_display}} 1024x768x16"
-  selenium_java_opts: "-Djava.security.egd=file:/dev/./urandom -Xmx500m -Xss1024k -jar {{selenium_jar_file}} -log {{selenium_log_file}}"
+  selenium_java_opts: "-Djava.security.egd=file:/dev/./urandom -Xmx500m -Xss1024k"
+  selenium_jar_opts: ""
 
   browser_phantomjs: true
   browser_chromium: true
