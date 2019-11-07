@@ -1,41 +1,44 @@
 ---
   - name: Browsers | Install packages required by browsers
-    apt: pkg="{{item}}" state="present"
-    with_items:
+    apt:
+     pkg:
       - "x11-xkb-utils"
       - "xfonts-100dpi"
       - "xfonts-75dpi"
       - "xfonts-scalable"
       - "xserver-xorg-core"
       - "libfontconfig1-dev"
+     state: present
     become: yes
     tags:
       - browsers
 
   - name: Browsers | Install firefox browser
-    apt: pkg="{{item}}" state="present"
-    with_items:
-      - "firefox"
+    apt:
+      pkg:
+       - "firefox"
+      state: present
     when: browser_firefox
     become: yes
     tags:
       - browsers
 
   - name: Browsers | Install chromium browser
-    apt: pkg="{{item}}" state="present"
-    with_items:
+    apt:
+     pkg:
       - "chromium-browser"
+     state: present
     when: browser_chromium
     become: yes
     tags:
       - browsers
 
   - name: Browsers | Install phantomjs
-    npm: name=phantomjs state=present global=yes executable="{{npm_path_detected}}/npm"
+    npm: name=phantomjs state=present global=yes executable="{{ npm_path_detected }}/npm"
     when: browser_phantomjs
-    become: "{{npm_is_global}}"
+    become: "{{ npm_is_global }}"
     environment:
-      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+      PATH: "{{ npm_path_detected }}:{{ ansible_env.PATH }}"
     tags:
       - browsers
 
@@ -43,9 +46,9 @@
     when: browser_google_chrome
 
   - name: Browsers | Install chromedriver
-    npm: name=chromedriver state=present global=yes executable="{{npm_path_detected}}/npm"
-    become: "{{npm_is_global}}"
+    npm: name=chromedriver state=present global=yes executable="{{ npm_path_detected }}/npm"
+    become: "{{ npm_is_global }}"
     environment:
-      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+      PATH: "{{ npm_path_detected }}:{{ ansible_env.PATH }}"
     tags:
       - browsers

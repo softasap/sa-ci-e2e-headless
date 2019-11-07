@@ -2,6 +2,7 @@
   - name: NVM | Check if nvm is present
     command: test -s ~/.nvm/nvm.sh
     ignore_errors: yes
+    changed_when: false
     register: nvm_present
     tags:
       - nodejs

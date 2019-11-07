@@ -1,17 +1,19 @@
 ---
   - name: Protractor | INSTALLATION UNDER ROOT IS NOT UNRECOMMENDED
-    shell: "{{item}}"
+    shell: "{{ item }}"
     environment:
-      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+      PATH: "{{ npm_path_detected }}:{{ ansible_env.PATH }}"
     with_items:
       - "npm config set user 0"
       - "npm config set unsafe-perm true"
     when: deploy_user == "root"
+    tags:
+      - skip_ansible_lint
 
   - name: Protractor | Install protractor
-    npm: name=protractor state=present global=yes executable="{{npm_path_detected}}/npm"
-    become: "{{npm_is_global}}"
+    npm: name=protractor state=present global=yes executable="{{ npm_path_detected }}/npm"
+    become: "{{ npm_is_global }}"
     environment:
-      PATH: "{{npm_path_detected}}:{{ ansible_env.PATH }}"
+      PATH: "{{ npm_path_detected }}:{{ ansible_env.PATH }}"
     tags:
       - protractor
