@@ -2,7 +2,7 @@
 ---
 
   - name: Selenium | Create folder log
-    file: path={{ selenium_log_dir | default('/var/logs/selenium') }} state=directory mode=0755 owner="{{deploy_user}}"
+    file: path={{ selenium_log_dir | default('/var/logs/selenium') }} state=directory mode=0755 owner="{{ deploy_user }}"
     become: yes
     tags:
       - selenium
@@ -10,13 +10,14 @@
   - name: Selenium | Check if is installed
     command: test -x {{ selenium_dir }}/selenium-server-standalone.jar
     register: selenium_present
+    changed_when: false
     ignore_errors: yes
     tags:
       - selenium
 
   - name: Selenium | Create target dir
     file: path={{ selenium_dir }} state=directory mode=0755
-    when: selenium_present|failed
+    when: selenium_present is failed
     become: yes
     tags:
       - selenium
@@ -26,27 +27,28 @@
     get_url:
       url: "http://selenium-release.storage.googleapis.com/{{ selenium_version.split('.')[0] }}.{{ selenium_version.split('.')[1] }}/selenium-server-standalone-{{ selenium_version }}.jar"
       dest: "{{ selenium_dir }}"
-    when: selenium_present|failed
+    when: selenium_present is failed
     become: yes
     tags:
       - selenium
+      - skip_ansible_lint
 
   - name: Selenium |  Install
     command: mv {{ selenium_dir }}/selenium-server-standalone-{{ selenium_version }}.jar {{ selenium_dir }}/selenium-server-standalone.jar
-    when: selenium_present|failed
+    when: selenium_present is failed
     become: yes
     tags:
       - selenium
 
   - name: Selenium |  Add to startup (upstart)
-    template: src="{{role_dir}}/templates/selenium_upstart.j2" dest=/etc/init.d/selenium owner=root group=root mode=0755
+    template: src="{{ role_dir }}/templates/selenium_upstart.j2" dest=/etc/init.d/selenium owner=root group=root mode=0755
     when: upstart_system == "upstart"
     become: yes
     tags:
       - selenium
 
   - name: Selenium |  Add to startup (systemd)
-    template: src="{{role_dir}}/templates/selenium_systemd.j2" dest=/etc/systemd/system/selenium.service owner=root group=root mode=0664
+    template: src="{{ role_dir }}/templates/selenium_systemd.j2" dest=/etc/systemd/system/selenium.service owner=root group=root mode=0664
     when: upstart_system == "systemd"
     become: yes
     tags:
@@ -54,7 +56,7 @@
 
   - name: Selenium |  Run
     service: name=selenium state=started enabled=yes
-    when: selenium_present|failed and docker_test is not defined
+    when: selenium_present is failed and docker_test is not defined
     become: yes
     tags:
       - selenium

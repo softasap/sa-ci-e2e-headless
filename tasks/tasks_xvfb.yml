@@ -6,13 +6,13 @@
       - xvfb
 
   - name: XVFB |  Add to startup (upstart)
-    template: src="{{role_dir}}/templates/xvfb_upstart.j2" dest=/etc/init.d/xvfb owner=root group=root mode=0755
+    template: src="{{ role_dir }}/templates/xvfb_upstart.j2" dest=/etc/init.d/xvfb owner=root group=root mode=0755
     become: yes
     tags:
       - xvfb
 
   - name: Selenium |  Add to startup (systemd)
-    template: src="{{role_dir}}/templates/xvfb_systemd.j2" dest=/etc/systemd/system/xvfb.service owner=root group=root mode=0664
+    template: src="{{ role_dir }}/templates/xvfb_systemd.j2" dest=/etc/systemd/system/xvfb.service owner=root group=root mode=0664
     when: upstart_system == "systemd"
     become: yes
     tags:

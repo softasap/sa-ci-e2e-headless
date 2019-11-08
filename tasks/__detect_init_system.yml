@@ -7,9 +7,11 @@
       else echo UNKNOWN;
       fi
     become: yes
+    changed_when: false
     args:
       executable: /bin/bash
     register: upstart_detect_raw
 
-  - set_fact:
-      upstart_system: "{{upstart_detect_raw.stdout}}"
+  - name: set upstart_system fact
+    set_fact:
+      upstart_system: "{{ upstart_detect_raw.stdout }}"

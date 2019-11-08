@@ -1,28 +1,56 @@
-  - name: Java | Check if is present
-    command: test -x /usr/bin/java
-    ignore_errors: yes
-    register: java_present
-    tags: 
-        -java
+---
+  - block:
 
-  - name: Java | Add apt repository
-    apt_repository: repo='ppa:webupd8team/java'
-    when: java_present|failed
+    - block:
+
+        - name: Set 8 defaults
+          set_fact:
+            java_package: "java-1.8.0-openjdk"
+
+      when: ansible_distribution == 'Fedora'
+
+    - block:
+
+        - name: Set 7 defaults
+          set_fact:
+            java_package: "java-1.7.0-openjdk"
+          when: ansible_distribution_version.split('.')[0] in ['6']
+
+        - name: Set 8 defaults
+          set_fact:
+            java_package: "java-1.8.0-openjdk"
+          when: ansible_distribution_version.split('.')[0] in ['7']
+
+      when: ansible_os_family == 'RedHat'
+
+    - block:
+
+        - name: Set 7 defaults
+          set_fact:
+            java_package: "openjdk-7-jdk"
+          when: ansible_distribution_version.split('.')[0] in ['12', '14']
+
+        - name: Set 8 defaults
+          set_fact:
+            java_package: "openjdk-8-jdk"
+          when: ansible_distribution_version.split('.')[0] in ['16']
+
+        - name: Set 11 defaults
+          set_fact:
+            java_package: "openjdk-11-jdk"
+          when: ansible_distribution_version.split('.')[0] in ['18']
+
+      when: ansible_os_family == 'Debian' and ansible_distribution == 'Ubuntu'
+
+    when: java_package is not defined
+
+  - name: Java | Install package
+    package:
+      name: "{{ java_package }}"
+      state: present
     become: yes
-    tags: 
-        -java
-
-  - name: Java | Accept the Oracle license before the installation
-    shell: echo oracle-java{{java_version}}-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
-    when: java_present|failed
-    become: yes
-    tags: 
-        -java
+    tags:
+      - java
 
 
-  - name: Java | Install
-    apt: update-cache=yes force=yes state=present pkg=oracle-java{{java_version}}-installer
-    when: java_present|failed
-    become: yes
-    tags: 
-        -java
+

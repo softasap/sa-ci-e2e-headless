@@ -1,45 +1,53 @@
 ---
 
-  - set_fact:
+  - name: reset npm_source_prefix fact
+    set_fact:
       npm_source_prefix: ""
 
   - name: USE | Detect Node Location overrides
     shell: |
-      if [[ -f /home/{{deploy_user}}/.nvm/nvm.sh ]]; then echo /home/{{deploy_user}}/.nvm/nvm.sh;
-      elif [[ /{{deploy_user}}/.nvm/nvm.sh ]]; then echo /{{deploy_user}}/.nvm/nvm.sh;
-      elif [[ -f /home/{{deploy_user}}/.profile ]]; then echo /home/{{deploy_user}}/.profile;
-      elif [[ -f /{{deploy_user}}/.profile ]]; then echo /{{deploy_user}}/.profile;
-      elif [[ -f /home/{{deploy_user}}/.bashrc ]]; then echo /home/{{deploy_user}}/.bashrc;
-      elif [[ -f /{{deploy_user}}/.bashrc ]]; then echo /{{deploy_user}}/.bashrc;
+      if [[ -f /home/{{ deploy_user }}/.nvm/nvm.sh ]]; then echo /home/{{ deploy_user }}/.nvm/nvm.sh;
+      elif [[ /{{ deploy_user }}/.nvm/nvm.sh ]]; then echo /{{ deploy_user }}/.nvm/nvm.sh;
+      elif [[ -f /home/{{ deploy_user }}/.profile ]]; then echo /home/{{ deploy_user }}/.profile;
+      elif [[ -f /{{ deploy_user }}/.profile ]]; then echo /{{ deploy_user }}/.profile;
+      elif [[ -f /home/{{ deploy_user }}/.bashrc ]]; then echo /home/{{ deploy_user }}/.bashrc;
+      elif [[ -f /{{ deploy_user }}/.bashrc ]]; then echo /{{ deploy_user }}/.bashrc;
       else echo "";
       fi
     become: yes
-    become_user: "{{deploy_user}}"
+    become_user: "{{ deploy_user }}"
+    changed_when: false
     args:
       executable: /bin/bash
     register: nvm_detect_raw
 
-  - set_fact:
-      npm_source_prefix: "source {{nvm_detect_raw.stdout}} &&"
+  - name: update npm_source_prefix fact
+    set_fact:
+      npm_source_prefix: "source {{ nvm_detect_raw.stdout }} &&"
     when: nvm_detect_raw.stdout != ""
-
+    tags:
+      - skip_ansible_lint
 
   - debug: var="npm_source_prefix"
 
   - name: NODE LOCATION | Detect npm
-    shell: '{{npm_source_prefix}} dirname "`which npm`"'
+    shell: '{{ npm_source_prefix }} dirname "`which npm`"'
     args:
        executable: /bin/bash
+    changed_when: False
     register: npm_path_detected_raw
-    become: "{{deploy_user}}"
+    become: "{{ deploy_user }}"
+    tags:
+      - skip_ansible_lint
 
 #  - debug: var="npm_path_detected_raw"
 
-  - set_fact:
+  - name: set npm paths
+    set_fact:
       npm_path_detected: "{{ npm_path_detected_raw.stdout }}"
-      npm_is_global: "{{npm_path_detected_raw.stdout.find('.nvm') == -1}}"
+      npm_is_global: "{{ npm_path_detected_raw.stdout.find('.nvm') == -1 }}"
 
-  - debug: msg="{{ npm_path_detected_raw }} thus npm global is {{npm_is_global}}"
+  - debug: msg="{{ npm_path_detected_raw }} thus npm global is {{ npm_is_global }}"
 
 # Usage example:
 #    - name: Install ember-cli

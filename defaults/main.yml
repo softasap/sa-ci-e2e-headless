@@ -24,7 +24,6 @@
   browser_google_chrome: true
 
   option_install_java: false
-  java_version: 7
 
   nvm_version: 0.31.1
 
