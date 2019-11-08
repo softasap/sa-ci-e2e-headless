@@ -2,20 +2,29 @@
   - name: NVM | Check if nvm is present
     command: test -s ~/.nvm/nvm.sh
     ignore_errors: yes
-    changed_when: false
+    changed_when: False
     register: nvm_present
     tags:
       - nodejs
 
   - name: NVM | Install dependencies
-    apt: pkg={{ item }} update_cache=yes
-    with_items:
-      - build-essential
-      - curl
-      - git
-      - libssl-dev
+    package:
+      name:
+        - curl
+        - git
     become: true
-    when: nvm_present | failed
+    when: nvm_present is failed
+    tags:
+      - nvm
+
+  - name: NVM | Install OS specific dependencies
+    package:
+     name:
+        - build-essential
+        - libssl-dev
+     update_cache: yes
+    become: true
+    when: nvm_present is failed and ansible_os_family == "Debian"
     tags:
       - nvm
 
@@ -23,7 +32,7 @@
     become: yes
     become_user: "{{ deploy_user }}"
     git: repo=https://github.com/creationix/nvm.git dest=~/.nvm version=v{{ nvm_version }}
-    when: nvm_present | failed
+    when: nvm_present is failed
     tags:
       - nvm
 
@@ -31,7 +40,7 @@
     become: yes
     become_user: "{{ deploy_user }}"
     lineinfile: dest=~/.profile line="source ~/.nvm/nvm.sh"  create=yes
-    when: nvm_present | failed
+    when: nvm_present is failed
     tags:
       - nvm
 
@@ -66,6 +75,6 @@
       executable: /bin/bash
     become: yes
     become_user: "{{ deploy_user }}"
-    when: option_nodejs_install_with_nvm and default_nodejs_version_ok | failed
+    when: option_nodejs_install_with_nvm and default_nodejs_version_ok is failed
     tags:
       - nvm
